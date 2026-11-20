@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+# Secrets never live in the repo: SMTP creds + recipient come from the environment
+# (on the home-server: /etc/home-server/gta6-watcher.env, root 600).
+.env
+*.env
+# Runtime state + last-run outputs (dedup state, findings, digest md/html).
+data/
