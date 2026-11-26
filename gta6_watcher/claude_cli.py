@@ -9,6 +9,8 @@ import json
 import subprocess
 from typing import Any, Optional, Sequence
 
+from .usage import UsageLedger
+
 
 class ClaudeError(RuntimeError):
     """The CLI failed, timed out, or returned something unusable."""
@@ -22,12 +24,14 @@ def run(
     timeout: int = 600,
     allowed_tools: Sequence[str] = (),
     json_schema: Optional[dict] = None,
+    ledger: Optional[UsageLedger] = None,
 ) -> Any:
     """Run one non-interactive Claude turn and return its result.
 
     Returns the parsed structured output (a dict) when ``json_schema`` is given,
     otherwise the final text. The prompt goes in on stdin so its length is not
-    bounded by argv.
+    bounded by argv. When ``ledger`` is given, this call's usage fields from the
+    CLI's JSON envelope are accumulated into it.
     """
     cmd = [claude_bin, "-p", "--model", model, "--output-format", "json"]
     if allowed_tools:
@@ -52,6 +56,9 @@ def run(
         raise ClaudeError(f"claude CLI returned non-JSON output: {proc.stdout[:300]!r}") from exc
     if envelope.get("is_error"):
         raise ClaudeError(f"claude reported an error: {envelope.get('result')!r}")
+
+    if ledger is not None:
+        ledger.add(envelope)
 
     if json_schema is None:
         text = envelope.get("result")

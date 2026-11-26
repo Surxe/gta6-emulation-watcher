@@ -8,6 +8,7 @@ from typing import Callable, List, Optional
 from . import claude_cli
 from .config import PROMPTS_DIR, Settings
 from .research import Finding
+from .usage import UsageLedger
 
 
 def line_count(md: str) -> int:
@@ -44,6 +45,7 @@ def summarize(
     settings: Settings,
     findings: List[Finding],
     ask: Optional[Callable[[str], str]] = None,
+    ledger: Optional[UsageLedger] = None,
 ) -> str:
     """Return the digest markdown, guaranteed to be <= settings.max_lines lines.
 
@@ -56,6 +58,7 @@ def summarize(
                 model=settings.model,
                 claude_bin=settings.claude_bin,
                 timeout=settings.claude_timeout,
+                ledger=ledger,
             )
 
     limit = settings.max_lines

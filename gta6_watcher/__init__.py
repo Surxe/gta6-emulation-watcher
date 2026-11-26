@@ -1,1 +1,1 @@
-"""Daily GTA 6 PlayStation-emulation news digest: search -> review -> HTML -> email."""
+"""Daily GTA VI PC-port news digest via PortWatch VI: rank -> search -> review -> email."""
